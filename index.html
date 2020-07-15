@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SnakeGame</title>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      document.addEventListener("keydown", keyIn);
+      setInterval(game, 1000 / 10); // run in 10 frames per second
+
+      let playerX = 10;
+      let playerY = 10;
+      let movementX = 0;
+      let movementY = 0;
+      let gridSize = 25;
+      let tileCount = 20;
+      let applePositionX = 15;
+      let applePositionY = 15;
+      let snakeBodyPart = [];
+      let tailLength = 5;
+
+      function game() {
+        playerX += movementX;
+        playerY += movementY;
+
+        if (playerX < 0) {
+          playerX = tileCount - 1;
+        }
+
+        if (playerX > tileCount - 1) {
+          playerX = 0;
+        }
+
+        if (playerY < 0) {
+          playerY = tileCount - 1;
+        }
+
+        if (playerY > tileCount - 1) {
+          playerY = 0;
+        }
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // apple
+        ctx.fillStyle = "red";
+        ctx.fillRect(
+          applePositionX * gridSize,
+          applePositionY * gridSize,
+          25,
+          25
+        );
+
+        if (playerX === applePositionX && playerY === applePositionY) {
+          tailLength++;
+          applePositionX = Math.floor(Math.random() * tileCount);
+          applePositionY = Math.floor(Math.random() * tileCount);
+        }
+        // put the head
+        snakeBodyPart.unshift({ x: playerX, y: playerY });
+        // remove the tail if the new snakeBodyPart already bigger than tail
+        while (snakeBodyPart.length > tailLength) {
+          snakeBodyPart.pop();
+        }
+
+        // player
+        ctx.fillStyle = "blue";
+        // render each snakeBodyPart part
+        for (let i = 0; i < snakeBodyPart.length; i++) {
+          ctx.fillRect(
+            snakeBodyPart[i].x * gridSize,
+            snakeBodyPart[i].y * gridSize,
+            25,
+            25
+          );
+        }
+      }
+
+      function keyIn(ev) {
+        switch (ev.keyCode) {
+          case 37: {
+            movementX = -1;
+            movementY = 0;
+            break;
+          }
+          case 38: {
+            movementX = 0;
+            movementY = -1;
+            break;
+          }
+          case 39: {
+            movementX = 1;
+            movementY = 0;
+            break;
+          }
+          case 40: {
+            movementX = 0;
+            movementY = 1;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
